@@ -29,9 +29,9 @@ set -o pipefail # Check all commands in a pipeline
 # usualy fine, but in cases where we hit ICEs that have been fixed upstream,
 # we want the very latest rustc to get the fix. Removing these components also
 # reduces download time during `rustup update`.
-rustup component remove clippy
-rustup component remove rustfmt
-rustup component remove rust-docs
+rustup component remove clippy || true
+rustup component remove rustfmt || true
+rustup component remove rust-docs || true
 rustup update
 
 # Install SpiderMonkey.
