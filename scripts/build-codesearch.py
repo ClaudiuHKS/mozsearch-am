@@ -31,7 +31,7 @@ config_fname = sys.argv[1]
 tree_name = sys.argv[2]
 
 livegrep_config = {
-    'name': 'Searchfox',
+    'name': 'AM Codesearch',
     'repositories': [],
     'fs_paths': [],
 }

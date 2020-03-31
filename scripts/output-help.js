@@ -7,7 +7,7 @@ run(mozSearchRoot + "/scripts/output-lib.js");
 run(mozSearchRoot + "/scripts/output.js");
 
 let opt = {tree: treeName,
-           title: "Searchfox",
+           title: "AM Codesearch",
            autofocusSearch: true};
 
 let body = snarf(helpFile);
