@@ -62,7 +62,7 @@ pub fn format_code(
     let mut starts_nest = false;
 
     fn fixup(s: String) -> String {
-        s.replace("\r", "\u{21A9}") // U+21A9 = LEFTWARDS ARROW WITH HOOK.
+        s.replace("\r", "")
     }
 
     let mut line_start = 0;
