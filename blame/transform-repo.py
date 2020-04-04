@@ -223,7 +223,7 @@ def build_blame_tree(builder, file_movement, commit, path):
     for entry in tree:
         for i in range(len(parent_trees)):
             parent_tree = parent_trees[i]
-            if not parent_tree:
+            if not parent_tree or not hasattr(parent_tree, '__getitem__'):
                 continue
             parent_blame_tree = parent_blame_trees[i]
             if entry.name in parent_tree and parent_tree[entry.name].id == entry.id:
