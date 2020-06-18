@@ -121,7 +121,7 @@ fn main() {
 
         let format = languages::select_formatting(path);
 
-        let output_file = File::create(output_fname).unwrap();
+        let output_file = File::create(&output_fname).unwrap();
         let mut writer = BufWriter::new(output_file);
 
         let source_file = match File::open(source_fname.clone()) {
@@ -265,7 +265,7 @@ fn main() {
                 if tree_config.paths.git_blame_path.is_some() {
                     vcs_panel_items.push(PanelItem {
                         title: "Blame".to_owned(),
-                        link: "javascript:alert('Hover over the gray bar on the left to see blame information.')".to_owned(),
+                        link: format!("/{}/source/{}-blame", tree_name, path),
                         update_link_lineno: "",
                         accel_key: None,
                     });
@@ -327,12 +327,14 @@ fn main() {
             });
         }
 
+        let input2 = input.clone();
+
         format_file_data(
             &cfg,
             tree_name,
             &panel,
             &head_commit,
-            &blame_commit,
+            &None, /*&blame_commit,*/
             path,
             input,
             &jumps,
@@ -341,5 +343,27 @@ fn main() {
             Some(&mut diff_cache),
         )
         .unwrap();
+
+        println!("File {}-blame", path);
+
+        if blame_commit.is_some() {
+            let blame_output_file = File::create(output_fname + "-blame").unwrap();
+            let mut blame_writer = BufWriter::new(blame_output_file);
+
+            format_file_data(
+                &cfg,
+                tree_name,
+                &panel,
+                &head_commit,
+                &blame_commit,
+                path,
+                input2,
+                &jumps,
+                &analysis,
+                &mut blame_writer,
+                Some(&mut diff_cache),
+            )
+            .unwrap();
+        }
     }
 }

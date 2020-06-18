@@ -411,6 +411,9 @@ pub fn format_file_data(
 
         // Compute the blame data for this line (if any)
         let blame_data = if let Some(ref lines) = blame_lines {
+            if (i as usize) >= lines.len() {
+                break;
+            }
             let blame_line = &lines[i as usize];
             let pieces = blame_line.splitn(4, ':').collect::<Vec<_>>();
 
@@ -496,12 +499,11 @@ pub fn format_file_data(
             let class = if color { 1 } else { 2 };
             let data = format!(r#" class="blame-strip c{}" data-blame="{}#{}#{}" role="button" aria-label="blame" aria-expanded="false""#,
                                class, revs, filespecs, blame_linenos);
-            data
+            format!("<div role=\"cell\" class=\"blame-container\"><div{}></div></div>", data)
         } else {
-            // If we have no blame data, we want the div here taking up space, but we don't want it
-            // to bother screen readers.
-            " class=\"blame-strip\" role=\"aria-hidden\"".to_owned()
+            format!("")
         };
+
 
         // If this line starts nesting, we need to create a div that exists strictly to contain the
         // position:sticky element.
@@ -518,12 +520,10 @@ pub fn format_file_data(
                 "<div role=\"row\" class=\"source-line-with-number{}\">",
                 maybe_nesting_style
             )),
+
             F::Indent(vec![
                 // Blame info.
-                F::T(format!(
-                    "<div role=\"cell\" class=\"blame-container\"><div{}></div></div>",
-                    blame_data
-                )),
+                F::T(blame_data),
                 // The line number.
                 F::T(format!(
                     "<div id=\"l{}\" role=\"cell\" class=\"line-number\">{}</div>",
@@ -683,9 +683,7 @@ pub fn format_path(
     if tree_config.paths.git_blame_path.is_some() {
         vcs_panel_items.push(PanelItem {
             title: "Blame".to_owned(),
-            link:
-                "javascript:alert('Hover over the gray bar on the left to see blame information.')"
-                    .to_owned(),
+            link: format!("/{}/source/{}-blame", tree_name, path),
             update_link_lineno: "",
             accel_key: None,
         });
